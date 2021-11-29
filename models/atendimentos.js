@@ -7,19 +7,19 @@ class Atendimento {
         const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS')
         const atendimentoDatado = { ...atendimento, dataCriacao, data }
 
-        const dataEhValida = moment(data).isSameOrAfter(dataCriacao)
-        const clienteEhValido = atendimento.cliente.length >= 5
+        const dataEValida = moment(data).isSameOrAfter(dataCriacao)
+        const clienteEValido = atendimento.cliente.length >= 5
 
         const validacoes = [
             {
                 nome: 'data',
-                valido: dataEhValida,
-                mensagem: 'Data deve ser maior ou igual a data atual'
+                valido: dataEValida,
+                descricao: 'o campo data deve ter valor maior ou igual a data atual'
             },
             {
-                nome: 'cliente',
-                valido: clienteEhValido,
-                mensagem: 'Cliente deve ter pelo menos cinco caracteres'
+                nome: 'nome do cliente',
+                valido: clienteEValido,
+                descricao: 'o campo nome deve ter pelo menos 5 caracteres'
             }
         ]
 
@@ -28,16 +28,15 @@ class Atendimento {
 
         if (existemErros) {
             res.status(400).json(erros)
-        } else {
-            const atendimentoDatado = { ...atendimento, dataCriacao, data }
-
+        }
+        else {
             const sql = 'INSERT INTO Atendimentos SET ?'
 
-            conexao.query(sql, atendimentoDatado, (erro, resultados) => {
+            conexao.query(sql, atendimentoDatado, (erro, resultado) => {
                 if (erro) {
                     res.status(400).json(erro)
                 } else {
-                    res.status(201).json(resultados)
+                    res.status(201).json(resultado)
                 }
             })
         }
